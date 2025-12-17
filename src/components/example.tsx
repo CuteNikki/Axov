@@ -27,17 +27,8 @@ function Example({
   containerClassName?: string;
 }) {
   return (
-    <div
-      data-slot='example'
-      className={cn(
-        'mx-auto flex w-full max-w-lg min-w-0 flex-col gap-1 self-stretch lg:max-w-none',
-        containerClassName,
-      )}
-      {...props}
-    >
-      <div className='text-muted-foreground px-1.5 py-2 text-xs font-medium'>
-        {title}
-      </div>
+    <div data-slot='example' className={cn('mx-auto flex w-full max-w-lg min-w-0 flex-col gap-1 self-stretch lg:max-w-none', containerClassName)} {...props}>
+      <div className='text-muted-foreground px-1.5 py-2 text-xs font-medium'>{title}</div>
       <div
         data-slot='example-content'
         className={cn(
