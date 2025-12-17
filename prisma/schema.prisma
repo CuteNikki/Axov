@@ -13,18 +13,23 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
-}
+model Todo {
+  id          Int       @id @default(autoincrement())
+  orderIndex  Int?
+  // Content
+  title       String
+  description String?
+  // Priority (lower = more important)
+  priority    Int?
+  // Status derivation (done if completedAt is set, overdue if dueAt is past and not completed, pending otherwise)
+  dueAt       DateTime?
+  completedAt DateTime?
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  authorId  Int
-  author    User    @relation(fields: [authorId], references: [id])
+  // Indexes
+  @@index([orderIndex])
+  @@index([dueAt])
+  @@index([completedAt])
 }

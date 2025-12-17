@@ -4,52 +4,64 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 // Generated
 import { PrismaClient } from '@/generated/client';
-import { UserCreateInput } from '@/generated/models';
+import { TodoCreateInput } from '@/generated/models';
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
-const prisma = new PrismaClient({
-  adapter,
-});
-
-const userData: UserCreateInput[] = [
+const todoData: TodoCreateInput[] = [
   {
-    name: 'Alice',
-    email: 'alice@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Join the Prisma Discord',
-          content: 'https://pris.ly/discord',
-          published: true,
-        },
-        {
-          title: 'Prisma on YouTube',
-          content: 'https://pris.ly/youtube',
-        },
-      ],
-    },
+    title: 'Pay electricity bill',
+    priority: 1,
+    dueAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    orderIndex: 1,
   },
   {
-    name: 'Bob',
-    email: 'bob@prisma.io',
-    posts: {
-      create: [
-        {
-          title: 'Follow Prisma on Twitter',
-          content: 'https://www.twitter.com/prisma',
-          published: true,
-        },
-      ],
-    },
+    title: 'Finish todo app schema',
+    priority: 2,
+    dueAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+    orderIndex: 2,
+  },
+  {
+    title: 'Reply to emails',
+    priority: 3,
+    orderIndex: 3,
+  },
+  {
+    title: 'Buy groceries',
+    priority: 3,
+    dueAt: new Date(),
+    orderIndex: 4,
+  },
+  {
+    title: 'Book dentist appointment',
+    priority: 2,
+    orderIndex: 5,
+  },
+  {
+    title: 'Clean desk',
+    orderIndex: 6,
+  },
+  {
+    title: 'Submit tax documents',
+    priority: 1,
+    dueAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
+    orderIndex: 7,
+  },
+  {
+    title: 'Read Prisma docs',
+    priority: 4,
+    completedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
+    orderIndex: 8,
   },
 ];
 
 export async function main() {
-  for (const u of userData) {
-    await prisma.user.create({ data: u });
+  // Seed todos
+  for (const t of todoData) {
+    const existing = await prisma.todo.findFirst({ where: { title: t.title } });
+    if (existing) continue;
+    await prisma.todo.create({ data: t });
   }
 }
 
