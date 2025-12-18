@@ -12,7 +12,7 @@ export const updateTodoSchema = z.object({
   orderIndex: z.number().int().nonnegative('Order index must be non-negative').nullable(),
   priority: z.number().int().min(0, 'Priority must be at least 0').max(3, 'Priority must be at most 3').nullable(),
   dueAt: z.date('Invalid date').nullable(),
-  completedAt: z.date('Invalid date').nullable(),
+  completed: z.boolean().optional(),
 });
 
 export type CreateTodoInput = z.infer<typeof createTodoSchema>;

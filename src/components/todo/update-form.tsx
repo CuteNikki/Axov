@@ -41,7 +41,7 @@ export function TodoUpdateForm({ title, description, orderIndex, priority, dueAt
       orderIndex: orderIndex,
       priority: priority,
       dueAt: dueAt,
-      completedAt: completedAt,
+      completed: completedAt ? true : false,
     },
   });
 
@@ -148,16 +148,16 @@ export function TodoUpdateForm({ title, description, orderIndex, priority, dueAt
             {/* Completed */}
             <FormField
               control={form.control}
-              name='completedAt'
+              name='completed'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Completed</FormLabel>
                   <div className='flex flex-row items-center gap-2'>
                     <FormControl>
-                      <Checkbox checked={!!field.value} onCheckedChange={(checked) => field.onChange(checked ? new Date() : null)} />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
-                    <span className='cursor-pointer select-none' onClick={() => field.onChange(field.value ? null : new Date())}>
-                      {field.value ? `Completed (at ${field.value.toLocaleString()})` : 'Not completed'}
+                    <span className='cursor-pointer select-none' onClick={() => field.onChange(!field.value)}>
+                      {completedAt ? `Completed (at ${completedAt?.toLocaleString()})` : 'Not completed'}
                     </span>
                   </div>
                   <FormMessage />
