@@ -13,6 +13,7 @@ const todoData: (TodoCreateInput & { id: number })[] = [
   {
     id: 1,
     title: 'Pay electricity bill',
+    description: 'You gotta pay the bills man',
     priority: 1,
     dueAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
     orderIndex: 1,
@@ -27,12 +28,14 @@ const todoData: (TodoCreateInput & { id: number })[] = [
   {
     id: 3,
     title: 'Reply to emails',
+    description: 'Mom, boss, and ignore that one spammer',
     priority: 3,
     orderIndex: 3,
   },
   {
     id: 4,
     title: 'Buy groceries',
+    description: 'Milk, bread, eggs, and fruits',
     priority: 3,
     dueAt: new Date(),
     orderIndex: 4,
@@ -58,7 +61,8 @@ const todoData: (TodoCreateInput & { id: number })[] = [
   {
     id: 8,
     title: 'Read Prisma docs',
-    priority: 3,
+    description: 'https://www.prisma.io/docs',
+    priority: 0,
     completedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
     orderIndex: 8,
   },
