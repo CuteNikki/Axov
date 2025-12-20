@@ -43,12 +43,18 @@ export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, i
     } else {
       setEditTitle(todo.title);
     }
+    if (titleInputRef.current) {
+      titleInputRef.current.blur();
+    }
   };
 
   const handleDescriptionSave = () => {
     const newDesc = editDescription.trim() || null;
     if (newDesc !== todo.description) {
       onUpdate(todo.id, { description: newDesc });
+    }
+    if (descriptionInputRef.current) {
+      descriptionInputRef.current.blur();
     }
   };
 
@@ -100,7 +106,7 @@ export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, i
                   onBlur={handleTitleSave}
                   onKeyDown={handleTitleKeyDown}
                   className={cn(
-                    'hover:bg-accent block w-full truncate rounded-sm bg-transparent p-1 text-base leading-tight font-medium outline-none',
+                    'hover:bg-accent focus:bg-accent block w-full truncate rounded-sm bg-transparent p-1 text-base leading-tight font-medium outline-none',
                     isCompleted && 'text-muted-foreground line-through',
                   )}
                 />
@@ -117,7 +123,7 @@ export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, i
                     onKeyDown={handleDescriptionKeyDown}
                     rows={Math.max(1, (editDescription || '').split('\n').length)}
                     className={cn(
-                      'text-muted-foreground caret-primary hover:bg-accent block w-full resize-none truncate rounded-sm bg-transparent p-1 text-sm leading-tight outline-none',
+                      'text-muted-foreground hover:bg-accent focus:bg-accent block w-full resize-none truncate rounded-sm bg-transparent p-1 text-sm leading-tight outline-none',
                       !editDescription && 'italic opacity-50',
                     )}
                   />
@@ -172,7 +178,9 @@ export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, i
               <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
                 <PopoverTrigger asChild>
                   {(todo.dueAt || !isCompleted) && (
-                    <button
+                    <Button
+                      variant='ghost'
+                      size='sm'
                       className={cn(
                         'group/due-date inline-flex cursor-pointer items-center gap-1 text-xs transition-opacity hover:opacity-80',
                         isOverdue && 'text-destructive',
@@ -194,10 +202,10 @@ export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, i
                           onClick={clearDueDate}
                         />
                       )}
-                    </button>
+                    </Button>
                   )}
                 </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
+                <PopoverContent className='w-auto' align='start'>
                   <span>@todo: add calendar here</span>
                 </PopoverContent>
               </Popover>
