@@ -93,56 +93,52 @@ export function TodoUpdateForm({ title, description, orderIndex, priority, dueAt
 
             <div className='flex flex-col gap-4 md:flex-row'>
               {/* Priority */}
-              <div className='flex-1'>
-                <FormField
-                  control={form.control}
-                  name='priority'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Priority</FormLabel>
-                      <Select
-                        value={field.value ? String(field.value) : 'none'}
-                        onValueChange={(value) => field.onChange(value === 'none' ? null : Number(value))}
-                      >
-                        <FormControl>
-                          <SelectTrigger className='bg-secondary'>
-                            <SelectValue placeholder='Select priority' />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value='0'>Urgent</SelectItem>
-                          <SelectItem value='1'>High</SelectItem>
-                          <SelectItem value='2'>Medium</SelectItem>
-                          <SelectItem value='3'>Low</SelectItem>
-                          <SelectItem value='none'>No Priority</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name='priority'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>Priority</FormLabel>
+                    <Select
+                      value={field.value ? String(field.value) : 'none'}
+                      onValueChange={(value) => field.onChange(value === 'none' ? null : Number(value))}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='bg-secondary'>
+                          <SelectValue placeholder='Select priority' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value='0'>Urgent</SelectItem>
+                        <SelectItem value='1'>High</SelectItem>
+                        <SelectItem value='2'>Medium</SelectItem>
+                        <SelectItem value='3'>Low</SelectItem>
+                        <SelectItem value='none'>No Priority</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* Due date */}
-              <div className='flex-1'>
-                <FormField
-                  control={form.control}
-                  name='dueAt'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Due date</FormLabel>
-                      <FormControl>
-                        <Input
-                          type='datetime-local'
-                          value={field.value ? formatDatetimeLocal(field.value) : ''}
-                          onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name='dueAt'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>Due date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='datetime-local'
+                        value={field.value ? formatDatetimeLocal(field.value) : ''}
+                        onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             {/* Completed */}
