@@ -15,12 +15,12 @@ import { CreateTodoInput, createTodoSchema, filterTodoSchema, TodoFilters, Updat
 export async function getTodos(filters?: TodoFilters) {
   const parsed = filterTodoSchema.safeParse(filters);
 
-  if (!parsed.success) {
+  if (filters && !parsed.success) {
     console.error('Invalid todo filters:', parsed.error);
     return [];
   }
 
-  const { search, statuses, priorities, sortField, sortDirection } = parsed.data;
+  const { search, statuses, priorities, sortField, sortDirection } = parsed.data || {};
 
   return prisma.todo.findMany({
     where: {
