@@ -11,10 +11,10 @@ export function cn(...inputs: ClassValue[]) {
 
 export const PRIORITIES = [
   { value: null, label: 'No Priority', backgroundColor: 'bg-muted!' },
-  { value: 0, label: 'Urgent', backgroundColor: 'bg-red-700!' },
-  { value: 1, label: 'High', backgroundColor: 'bg-orange-700!' },
-  { value: 2, label: 'Medium', backgroundColor: 'bg-yellow-700!' },
-  { value: 3, label: 'Low', backgroundColor: 'bg-green-700!' },
+  { value: 0, label: 'Urgent', backgroundColor: 'bg-red-600!' },
+  { value: 1, label: 'High', backgroundColor: 'bg-orange-600!' },
+  { value: 2, label: 'Medium', backgroundColor: 'bg-yellow-600!' },
+  { value: 3, label: 'Low', backgroundColor: 'bg-green-600!' },
 ] as const;
 
 export function formatDatetimeLocal(date?: Date | string) {
