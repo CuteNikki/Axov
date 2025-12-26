@@ -75,7 +75,7 @@ Feel free to check the [issues page](https://github.com/yourusername/axov/issues
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
