@@ -3,10 +3,10 @@
 // Libraries
 import { useCallback, useEffect, useState } from 'react';
 // Actions
-import { getTodos } from '@/actions/todos';
+import { createTodo, deleteTodo as deleteTodoAction, getTodos } from '@/actions/todos';
 // Types
 import { Todo } from '@/generated/client';
-import { TodoFilters } from '@/lib/todos';
+import { CreateTodoInput, TodoFilters } from '@/lib/todos';
 
 export function useTodos() {
   const [loading, setLoading] = useState(true);
@@ -27,30 +27,26 @@ export function useTodos() {
     });
   }, [filters]);
 
-  const addTodo = useCallback((todo: Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>) => {
-    setTodos((prev) => {
-      const newTodo: Todo = {
-        ...todo,
-        id: Math.max(...prev.map((t) => t.id), 0) + 1,
-        orderIndex: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      // Shift all existing todos' orderIndex by 1
-      const shifted = prev.map((t) => ({
-        ...t,
-        orderIndex: (t.orderIndex ?? 0) + 1,
-      }));
-      return [newTodo, ...shifted];
-    });
+  const addTodo = useCallback(async (todo: CreateTodoInput) => {
+    const result = await createTodo(todo);
+
+    if (!result?.success || !result.todo) {
+      return;
+    }
+
+    setTodos((prev) => [...prev, result.todo]);
   }, []);
 
   const updateTodo = useCallback((id: number, updates: Partial<Todo>) => {
     setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, ...updates, updatedAt: new Date() } : todo)));
   }, []);
 
-  const deleteTodo = useCallback((id: number) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  const deleteTodo = useCallback(async (id: number) => {
+    const result = await deleteTodoAction(id);
+
+    if (result?.success) {
+      setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    }
   }, []);
 
   const toggleComplete = useCallback((id: number) => {
