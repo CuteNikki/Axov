@@ -1,10 +1,12 @@
 // Icons
 import { AlertCircleIcon, CheckCircle2Icon, Clock2Icon, ListTodoIcon } from 'lucide-react';
+// Utils
+import { getTodoStatus } from '@/lib/utils';
 // Types
 import { Todo } from '@/generated/client';
 // Components
 import { Card, CardContent } from '@/components/ui/card';
-import { getTodoStatus } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function TodoStatistics({ todos }: { todos: Todo[] }) {
   const stats = {
@@ -31,6 +33,31 @@ export function TodoStatistics({ todos }: { todos: Todo[] }) {
             <div>
               <p className='text-muted-foreground'>{item.label}</p>
               <p className='text-2xl font-semibold tabular-nums'>{item.value}</p>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+export function TodoStatisticsSkeleton() {
+  const items = [
+    { icon: ListTodoIcon, label: 'Total' },
+    { icon: CheckCircle2Icon, label: 'Completed' },
+    { icon: Clock2Icon, label: 'Pending' },
+    { icon: AlertCircleIcon, label: 'Overdue' },
+  ];
+
+  return (
+    <div className='grid grid-cols-2 gap-2 sm:grid-cols-4'>
+      {items.map((item) => (
+        <Card key={item.label}>
+          <CardContent className='flex flex-row items-center gap-4'>
+            <item.icon className='size-6 shrink-0' />
+            <div>
+              <p className='text-muted-foreground'>{item.label}</p>
+              <Skeleton className='h-8 w-16' />
             </div>
           </CardContent>
         </Card>

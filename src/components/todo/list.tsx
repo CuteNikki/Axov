@@ -100,3 +100,13 @@ export function TodoList({ todos, onToggleComplete, onUpdate, onEdit, onDelete, 
     </DndContext>
   );
 }
+
+export function TodoListSkeleton() {
+  return (
+    <div className='space-y-2'>
+      {[...Array(8)].map((_, index) => (
+        <div key={index} className={`bg-card ring-foreground/10 animate-pulse rounded-xl ring-1 ${index % 2 === 1 ? 'h-32' : 'h-25'}`} />
+      ))}
+    </div>
+  );
+}

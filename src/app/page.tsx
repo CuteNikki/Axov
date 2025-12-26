@@ -1,30 +1,16 @@
-// Actions
-import { getTodos } from '@/actions/todos';
+// Libraries
+import { Suspense } from 'react';
 // Components
 import { ComponentExample } from '@/components/component-example';
-import { TodoUpdateForm } from '@/components/todo/update-form';
+import { TodoUpdateSkeleton } from '@/components/todo/todo-update-skeleton';
+import { TodoUpdateWrapper } from '@/components/todo/todo-update-wrapper';
 
 export default async function Page() {
-  const todos = await getTodos();
-
   return (
     <main>
-      <div className='flex flex-wrap justify-center gap-4 p-4'>
-        {todos.map((todo) => (
-          <TodoUpdateForm
-            key={todo.id}
-            title={todo.title}
-            description={todo.description}
-            orderIndex={todo.orderIndex}
-            priority={todo.priority}
-            dueAt={todo.dueAt}
-            completedAt={todo.completedAt}
-            id={todo.id}
-            createdAt={todo.createdAt}
-            updatedAt={todo.updatedAt}
-          />
-        ))}
-      </div>
+      <Suspense fallback={<TodoUpdateSkeleton />}>
+        <TodoUpdateWrapper />
+      </Suspense>
       <ComponentExample />
     </main>
   );
