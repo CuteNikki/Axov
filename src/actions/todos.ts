@@ -84,14 +84,33 @@ export async function createTodo(values: CreateTodoInput) {
 
   // Validation failed, provided values are invalid
   if (!parsed.success) {
-    return { success: false, errors: parsed.error.flatten().fieldErrors };
+    return { success: false, errors: parsed.error.flatten().fieldErrors, created: null };
   }
 
-  await prisma.todo.create({
+  const created = await prisma.todo.create({
     data: parsed.data,
   });
+
   revalidatePath('/');
-  return { success: true };
+  return { success: true, errors: null, todo: created };
+}
+
+/**
+ * Delete a todo by ID
+ * @param id ID of the todo to delete
+ * @returns Deleted todo
+ */
+export async function deleteTodo(id: number) {
+  const result = await prisma.todo.delete({
+    where: { id },
+  });
+
+  if (!result) {
+    return { success: false, todo: null };
+  }
+
+  revalidatePath('/todos');
+  return { success: true, todo: result };
 }
 
 export async function updateTodo(id: number, values: UpdateTodoInput) {
