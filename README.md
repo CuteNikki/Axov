@@ -71,6 +71,10 @@ bun run dev
 Contributions, issues, and feature requests are welcome!  
 Feel free to check the [issues page](https://github.com/yourusername/axov/issues) or submit a pull request.
 
+#### Known Issues
+
+- The priority dropdown on the Todo Items is off-screen/not where it's supposed to be
+
 ---
 
 ### 📄 License
