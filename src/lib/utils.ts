@@ -9,6 +9,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const STATUSES = ['pending', 'completed', 'overdue'] as const;
+
+export type TodoStatus = (typeof STATUSES)[number];
+
 export const PRIORITIES = [
   { value: null, label: 'No Priority', backgroundColor: 'bg-muted!' },
   { value: 0, label: 'Urgent', backgroundColor: 'bg-red-600!' },
@@ -16,6 +20,8 @@ export const PRIORITIES = [
   { value: 2, label: 'Medium', backgroundColor: 'bg-yellow-600!' },
   { value: 3, label: 'Low', backgroundColor: 'bg-green-600!' },
 ] as const;
+
+export type TodoPriority = (typeof PRIORITIES)[number]['value'];
 
 export function formatDatetimeLocal(date?: Date | string) {
   if (!date) return '';

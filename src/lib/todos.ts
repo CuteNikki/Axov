@@ -26,6 +26,11 @@ export const filterTodoSchema = z.object({
   sortDirection: z.enum(['asc', 'desc']),
 });
 
+export type SortField = z.infer<typeof filterTodoSchema>['sortField'];
+export type SortDirection = z.infer<typeof filterTodoSchema>['sortDirection'];
+export type StatusFilter = z.infer<typeof filterTodoSchema>['statuses'];
+export type PriorityFilter = z.infer<typeof filterTodoSchema>['priorities'];
+
 export type TodoFilters = z.infer<typeof filterTodoSchema>;
 
 export type CreateTodoInput = z.infer<typeof createTodoSchema>;

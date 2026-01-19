@@ -49,7 +49,7 @@ export default function TodoPage() {
 
         <div className='space-y-6'>
           <TodoStatistics todos={todos} />
-          <TodoFiltersBar filters={filters} onFiltersChange={setFilters} />
+          <TodoFiltersBar filters={filters} onFiltersChange={setFilters} totalCount={todos.length} filteredCount={todos.length} />
           <TodoList todos={todos} onToggleComplete={toggleComplete} onUpdate={updateTodo} onDelete={deleteTodo} onReorder={reorderTodos} />
         </div>
       </div>
