@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 // Database
 import prisma from '@/lib/prisma';
 // Utils
-import { CreateTodoInput, createTodoSchema, filterTodoSchema, TodoFilters, UpdateTodoInput } from '@/lib/todos';
+import { CreateTodoInput, createTodoSchema, filterTodoSchema, TodoFilters, UpdateTodoInput, updateTodoSchema } from '@/lib/todos';
 
 /**
  * Fetch todos with optional filters
@@ -113,24 +113,24 @@ export async function deleteTodo(id: number) {
   return { success: true, todo: result };
 }
 
-export async function updateTodo(id: number, values: UpdateTodoInput) {
-  // const parsed = updateTodoSchema.safeParse(values);
+export async function updateTodo(id: number, values: Partial<UpdateTodoInput>) {
+  const parsed = updateTodoSchema.safeParse(values);
 
-  // if (!parsed.success) {
-  //   return { success: false, errors: parsed.error.flatten().fieldErrors };
-  // }
+  if (!parsed.success) {
+    return { success: false, errors: parsed.error.flatten().fieldErrors };
+  }
 
-  // await prisma.todo.update({
-  //   where: { id },
-  //   data: {
-  //     title: parsed.data.title,
-  //     description: parsed.data.description,
-  //     orderIndex: parsed.data.orderIndex,
-  //     priority: parsed.data.priority,
-  //     dueAt: parsed.data.dueAt,
-  //     completedAt: parsed.data.completed ? new Date() : null,
-  //   },
-  // });
+  await prisma.todo.update({
+    where: { id },
+    data: {
+      title: parsed.data.title,
+      description: parsed.data.description,
+      orderIndex: parsed.data.orderIndex,
+      priority: parsed.data.priority,
+      dueAt: parsed.data.dueAt,
+      completedAt: parsed.data.completed ? new Date() : null,
+    },
+  });
   revalidatePath('/todos');
-  return { success: true, id, values };
+  return { success: true, id, data: parsed.data };
 }

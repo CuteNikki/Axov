@@ -10,18 +10,18 @@ import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalList
 import { CSS } from '@dnd-kit/utilities';
 // Types
 import { Todo } from '@/generated/client';
+import { UpdateTodoInput } from '@/lib/todos';
 // Components
 import { TodoItem } from '@/components/todo/item';
 
 interface SortableTodoItemProps {
   todo: Todo;
   onToggleComplete: (id: number) => void;
-  onUpdate: (id: number, updates: Partial<Todo>) => void;
-  onEdit: (todo: Todo) => void;
+  onUpdate: (id: number, updates: Partial<UpdateTodoInput>) => void;
   onDelete: (id: number) => void;
 }
 
-function SortableTodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete }: SortableTodoItemProps) {
+function SortableTodoItem({ todo, onToggleComplete, onUpdate, onDelete }: SortableTodoItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id });
 
   const style = {
@@ -31,15 +31,7 @@ function SortableTodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete }
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      <TodoItem
-        todo={todo}
-        onToggleComplete={onToggleComplete}
-        onUpdate={onUpdate}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        isDragging={isDragging}
-        dragHandleProps={listeners}
-      />
+      <TodoItem todo={todo} onToggleComplete={onToggleComplete} onUpdate={onUpdate} onDelete={onDelete} isDragging={isDragging} dragHandleProps={listeners} />
     </div>
   );
 }
@@ -47,13 +39,12 @@ function SortableTodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete }
 interface TodoListProps {
   todos: Todo[];
   onToggleComplete: (id: number) => void;
-  onUpdate: (id: number, updates: Partial<Todo>) => void;
-  onEdit: (todo: Todo) => void;
+  onUpdate: (id: number, updates: Partial<UpdateTodoInput>) => void;
   onDelete: (id: number) => void;
   onReorder: (activeId: number, overId: number) => void;
 }
 
-export function TodoList({ todos, onToggleComplete, onUpdate, onEdit, onDelete, onReorder }: TodoListProps) {
+export function TodoList({ todos, onToggleComplete, onUpdate, onDelete, onReorder }: TodoListProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -93,7 +84,7 @@ export function TodoList({ todos, onToggleComplete, onUpdate, onEdit, onDelete, 
       <SortableContext items={todos.map((t) => t.id)} strategy={verticalListSortingStrategy}>
         <div className='space-y-2'>
           {todos.map((todo) => (
-            <SortableTodoItem key={todo.id} todo={todo} onToggleComplete={onToggleComplete} onUpdate={onUpdate} onEdit={onEdit} onDelete={onDelete} />
+            <SortableTodoItem key={todo.id} todo={todo} onUpdate={onUpdate} onToggleComplete={onToggleComplete} onDelete={onDelete} />
           ))}
         </div>
       </SortableContext>

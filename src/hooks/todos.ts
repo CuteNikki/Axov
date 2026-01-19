@@ -3,10 +3,10 @@
 // Libraries
 import { useCallback, useEffect, useState } from 'react';
 // Actions
-import { createTodo, deleteTodo as deleteTodoAction, getTodos } from '@/actions/todos';
+import { createTodo, deleteTodo as deleteTodoAction, getTodos, updateTodo as updateTodoAction } from '@/actions/todos';
 // Types
 import { Todo } from '@/generated/client';
-import { CreateTodoInput, TodoFilters } from '@/lib/todos';
+import { CreateTodoInput, TodoFilters, UpdateTodoInput } from '@/lib/todos';
 
 export function useTodos() {
   const [loading, setLoading] = useState(true);
@@ -37,50 +37,89 @@ export function useTodos() {
     setTodos((prev) => [...prev, result.todo]);
   }, []);
 
-  const updateTodo = useCallback((id: number, updates: Partial<Todo>) => {
-    setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, ...updates, updatedAt: new Date() } : todo)));
-  }, []);
+  const updateTodo = useCallback(
+    async (id: number, updates: Partial<UpdateTodoInput>) => {
+      const previousTodos = todos;
+      setTodos((prev) =>
+        prev.map((todo) => (todo.id === id ? { ...todo, ...updates, updatedAt: new Date(), completedAt: updates.completed ? new Date() : null } : todo)),
+      );
 
-  const deleteTodo = useCallback(async (id: number) => {
-    const result = await deleteTodoAction(id);
+      const { success } = await updateTodoAction(id, updates);
 
-    if (result?.success) {
+      if (!success) {
+        setTodos(previousTodos);
+        alert('Failed to update todo. Please try again.');
+      }
+    },
+    [todos],
+  );
+
+  const deleteTodo = useCallback(
+    async (id: number) => {
+      const previousTodos = todos;
       setTodos((prev) => prev.filter((todo) => todo.id !== id));
-    }
-  }, []);
 
-  const toggleComplete = useCallback((id: number) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id
-          ? {
-              ...todo,
-              completedAt: todo.completedAt ? null : new Date(),
-              updatedAt: new Date(),
-            }
-          : todo,
-      ),
-    );
-  }, []);
+      const { success } = await deleteTodoAction(id);
 
-  const reorderTodos = useCallback((activeId: number, overId: number) => {
-    setTodos((prev) => {
-      const oldIndex = prev.findIndex((t) => t.id === activeId);
-      const newIndex = prev.findIndex((t) => t.id === overId);
+      if (!success) {
+        setTodos(previousTodos);
+        alert('Failed to delete todo. Please try again.');
+      }
+    },
+    [todos],
+  );
 
-      if (oldIndex === -1 || newIndex === -1) return prev;
+  const toggleComplete = useCallback(
+    (id: number) => {
+      const todo = todos.find((t) => t.id === id);
+      if (!todo) return;
 
-      const newTodos = [...prev];
-      const [removed] = newTodos.splice(oldIndex, 1);
-      newTodos.splice(newIndex, 0, removed);
+      const completed = !todo.completedAt;
 
-      return newTodos.map((todo, index) => ({
-        ...todo,
-        orderIndex: index,
-        updatedAt: new Date(),
-      }));
-    });
-  }, []);
+      updateTodo(id, { ...todo, completed });
+    },
+    [todos, updateTodo],
+  );
+
+  const reorderTodos = useCallback(
+    async (activeId: number, overId: number) => {
+      const previousTodos = todos;
+      const newTodos: Todo[] = [];
+
+      setTodos((prev) => {
+        const oldIndex = prev.findIndex((t) => t.id === activeId);
+        const newIndex = prev.findIndex((t) => t.id === overId);
+
+        if (oldIndex === -1 || newIndex === -1) return prev;
+
+        const reordered = [...prev];
+        const [removed] = reordered.splice(oldIndex, 1);
+        reordered.splice(newIndex, 0, removed);
+
+        newTodos.push(...reordered);
+
+        return reordered.map((todo, index) => ({
+          ...todo,
+          orderIndex: index,
+          updatedAt: new Date(),
+        }));
+      });
+
+      try {
+        for (const [index, todo] of newTodos.entries()) {
+          const { success } = await updateTodoAction(todo.id, { ...todo, orderIndex: index });
+          if (!success) {
+            throw new Error('Failed to reorder todos.');
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        setTodos(previousTodos);
+        alert('Failed to reorder todos. Please try again.');
+      }
+    },
+    [todos],
+  );
 
   return {
     loading,

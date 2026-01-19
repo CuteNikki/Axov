@@ -1,31 +1,15 @@
 'use client';
 
-// Libraries
-import { useState } from 'react';
-// Icons
 // Hooks
 import { useTodos } from '@/hooks/todos';
-// Types
-import { Todo } from '@/generated/client';
 // Components
 import { TodoCreateDialog, TodoCreateDialogSkeleton } from '@/components/todo/create-dialog';
+import { TodoFiltersBar } from '@/components/todo/filters-bar';
 import { TodoList, TodoListSkeleton } from '@/components/todo/list';
 import { TodoStatistics, TodoStatisticsSkeleton } from '@/components/todo/statistics';
 
 export default function TodoPage() {
   const { loading, todos, filters, setFilters, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos } = useTodos();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
-
-  const handleCreate = () => {
-    setEditingTodo(null);
-    setDialogOpen(true);
-  };
-
-  const handleEdit = (todo: Todo) => {
-    setEditingTodo(todo);
-    setDialogOpen(true);
-  };
 
   if (loading) {
     return (
@@ -65,10 +49,9 @@ export default function TodoPage() {
 
         <div className='space-y-6'>
           <TodoStatistics todos={todos} />
-          {/* <TodoFiltersBar filters={filters} onFiltersChange={setFilters} totalCount={todos.length} filteredCount={filteredTodos.length} /> */}
-          <TodoList todos={todos} onToggleComplete={toggleComplete} onUpdate={updateTodo} onEdit={handleEdit} onDelete={deleteTodo} onReorder={reorderTodos} />
+          <TodoFiltersBar filters={filters} onFiltersChange={setFilters} />
+          <TodoList todos={todos} onToggleComplete={toggleComplete} onUpdate={updateTodo} onDelete={deleteTodo} onReorder={reorderTodos} />
         </div>
-        {/* <TodoDialog open={dialogOpen} onOpenChange={setDialogOpen} todo={editingTodo} onSave={addTodo} onUpdate={updateTodo} /> */}
       </div>
     </main>
   );

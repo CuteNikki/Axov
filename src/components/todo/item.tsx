@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 // Types
 import { Todo } from '@/generated/client';
 // Utils
+import { UpdateTodoInput } from '@/lib/todos';
 import { cn, formatRelativeDate, getPriorityColor, getPriorityLabel, getTodoStatus } from '@/lib/utils';
 // Components
 import { Badge } from '@/components/ui/badge';
@@ -20,14 +21,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/u
 interface TodoItemProps {
   todo: Todo;
   onToggleComplete: (id: number) => void;
-  onUpdate: (id: number, updates: Partial<Todo>) => void;
-  onEdit: (todo: Todo) => void;
+  onUpdate: (id: number, updates: Partial<UpdateTodoInput>) => void;
   onDelete: (id: number) => void;
   isDragging?: boolean;
   dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, isDragging, dragHandleProps }: TodoItemProps) {
+export function TodoItem({ todo, onToggleComplete, onUpdate, onDelete, isDragging, dragHandleProps }: TodoItemProps) {
   const { completed: isCompleted, overdue: isOverdue } = getTodoStatus(todo);
 
   const [editTitle, setEditTitle] = useState(todo.title);
@@ -229,7 +229,7 @@ export function TodoItem({ todo, onToggleComplete, onUpdate, onEdit, onDelete, i
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuItem onClick={() => onEdit(todo)}>
+              <DropdownMenuItem>
                 <Pencil />
                 Edit
               </DropdownMenuItem>
