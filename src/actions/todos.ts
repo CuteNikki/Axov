@@ -58,10 +58,16 @@ export async function getTodos(filters?: TodoFilters) {
       // Priority filter
       ...(priorities?.length
         ? {
-            priority: {
-              // Filter out nulls for the query
-              in: priorities.filter((p) => p !== null),
-            },
+            OR: [
+              // Match priorities that are NOT null
+              {
+                priority: {
+                  in: priorities.filter((p) => p !== null),
+                },
+              },
+              // Explicitly match "No Priority" (null) if selected
+              ...(priorities.includes(null) ? [{ priority: null }] : []),
+            ],
           }
         : {}),
     },
